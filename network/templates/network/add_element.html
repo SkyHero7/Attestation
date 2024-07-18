@@ -2,14 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Network Element</title>
+    <style>
+        /* Стили для скрытия поля Debt по умолчанию */
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>Add Network Element</h1>
+    <h2>Add Network Element</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Save</button>
+        <script>
+            // Динамическое отображение поля Debt при выборе поставщика
+            document.addEventListener('DOMContentLoaded', function() {
+                var supplierField = document.getElementById('id_supplier');
+                var debtField = document.getElementById('id_debt');
+
+                function toggleDebtField() {
+                    debtField.classList.toggle('hidden', !supplierField.value); // Скрываем поле Debt, если поставщик не выбран
+                }
+
+                // Инициализация при загрузке страницы
+                toggleDebtField();
+
+                // Обработка изменений в поле Supplier
+                supplierField.addEventListener('change', function() {
+                    toggleDebtField();
+                });
+            });
+        </script>
+        <button type="submit">Add</button>
+        <a href="{% url 'home' %}">Cancel</a>
     </form>
 </body>
 </html>

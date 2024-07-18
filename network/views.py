@@ -1,10 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from rest_framework import viewsets, permissions, filters
 from rest_framework.permissions import BasePermission
-from .forms import NetworkElementForm
 
 from .models import NetworkElement, Product
 from .serializers import NetworkElementSerializer, ProductSerializer
+from .forms import NetworkElementForm
 
 def home(request):
     elements = NetworkElement.objects.all()
@@ -22,8 +22,19 @@ def add_element(request):
     if request.method == 'POST':
         form = NetworkElementForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('all_elements')
+            element = form.save(commit=False)
+
+            # Если поле supplier не указано, устанавливаем уровень и скрываем debt и supplier
+            if not element.supplier:
+                element.level = 0
+                element.debt = None
+                element.supplier = None
+            else:
+                previous_element = NetworkElement.objects.get(pk=element.supplier.id)
+                element.level = previous_element.level + 1
+
+            element.save()
+            return redirect('home')
     else:
         form = NetworkElementForm()
 

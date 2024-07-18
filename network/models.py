@@ -13,14 +13,27 @@ class NetworkElement(models.Model):
     city = models.CharField(max_length=255)
     street = models.CharField(max_length=255)
     house_number = models.CharField(max_length=10)
-    level = models.IntegerField(choices=LEVEL_CHOICES)
-    supplier = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='customers')
-    debt = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
+    supplier = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='customers')
+    debt = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    level = models.IntegerField(choices=LEVEL_CHOICES, editable=False)
+
+    def save(self, *args, **kwargs):
+        if self.supplier is None:
+            self.level = 0  # Завод
+        elif self.supplier.level == 0:
+            self.level = 1  # Розничная сеть
+        elif self.supplier.level in [1, 2]:
+            self.level = 2  # Индивидуальный предприниматель
+
+        if self.debt is None:  # Проверяем, что debt не None
+            self.debt = 0  # Устанавливаем debt на 0, если не задано другое значение
+
+        super(NetworkElement, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
-
 class Product(models.Model):
     name = models.CharField(max_length=255)
     model = models.CharField(max_length=255)
