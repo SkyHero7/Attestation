@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Elements</title>
+</head>
+<body>
+    <h1>All Elements</h1>
+
+    {% for element in elements %}
+    <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+        <h2>{{ element.name }}</h2>
+        <p><strong>Contacts:</strong></p>
+        <ul>
+            <li>Email: {{ element.email }}</li>
+            <li>Country: {{ element.country }}</li>
+            <li>City: {{ element.city }}</li>
+            <li>Street: {{ element.street }}, {{ element.house_number }}</li>
+        </ul>
+        <p><strong>Products:</strong></p>
+        <ul>
+            {% for product in element.products.all %}
+            <li>{{ product.name }} - {{ product.model }} (Released: {{ product.release_date|date:"Y-m-d" }})</li>
+            {% endfor %}
+        </ul>
+        <p><strong>Supplier:</strong>
+            {% if element.supplier %}
+                <a href="{% url 'admin:network_networkelement_change' element.supplier.id %}">{{ element.supplier.name }}</a>
+            {% else %}
+                No supplier
+            {% endif %}
+        </p>
+        <p><strong>Debt:</strong> {{ element.debt }}</p>
+        <p><strong>Created At:</strong> {{ element.created_at }}</p>
+    </div>
+    {% endfor %}
+
+</body>
+</html>

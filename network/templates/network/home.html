@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Hierarchy</title>
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            color: #fff;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 4px #999;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        .button:active {
+            background-color: #45a049;
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+        }
+
+        .element-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .element-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .element-item strong {
+            font-size: 18px;
+        }
+
+        .element-item .details {
+            margin-top: 8px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Electronics Network</h1>
+    <ul class="element-list">
+        {% for element in elements %}
+        <li class="element-item">
+            <strong>{{ element.name }}</strong> ({{ element.get_level_display }})<br>
+            <div class="details">
+                Supplier: {% if element.supplier %}{{ element.supplier.name }}{% else %}None{% endif %}<br>
+                Debt: {{ element.debt }}<br>
+                Contacts: {{ element.email }}, {{ element.street }} {{ element.house_number }}, {{ element.city }}, {{ element.country }}
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    <div>
+        <a href="{% url 'admin:index' %}" class="button">Admin Page</a>
+        <a href="/api/" class="button">API Page</a>
+        <a href="{% url 'add_element' %}" class="button">Add Network Element</a>
+        <a href="{% url 'all_elements' %}" class="button">View All Elements</a>
+    </div>
+</body>
+</html>

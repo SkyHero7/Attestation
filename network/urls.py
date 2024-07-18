@@ -1,8 +1,9 @@
-from rest_framework.routers import DefaultRouter
-from .views import NetworkElementViewSet, ProductViewSet
+from django.urls import path
+from .views import home
+from . import views
 
-router = DefaultRouter()
-router.register(r'network-elements', NetworkElementViewSet)
-router.register(r'products', ProductViewSet)
-
-urlpatterns = router.urls
+urlpatterns = [
+    path('', home, name='home'),
+    path('all-elements/', views.all_elements, name='all_elements'),
+    path('add-element/', views.add_element, name='add_element'),
+]
