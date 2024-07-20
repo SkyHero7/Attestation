@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Network Hierarchy</title>
+    <title>Иерархия сети</title>
     <style>
         .button {
             display: inline-block;
@@ -54,25 +54,28 @@
     </style>
 </head>
 <body>
-    <h1>Electronics Network</h1>
+    <h1>Сеть электроники</h1>
     <ul class="element-list">
         {% for element in elements %}
         <li class="element-item">
             <strong>{{ element.name }}</strong> ({{ element.get_level_display }})<br>
             <div class="details">
-                Supplier: {% if element.supplier %}{{ element.supplier.name }}{% else %}None{% endif %}<br>
-                Debt: {{ element.debt }}<br>
-                Contacts: {{ element.email }}, {{ element.street }} {{ element.house_number }}, {{ element.city }}, {{ element.country }}
+                Поставщик: {% if element.supplier %}{{ element.supplier.name }}{% else %}Нет{% endif %}<br>
+                {% if element.debt < 0 %}
+                    Задолженность: {{ element.debt|floatformat:2|slice:"1:" }}<br>
+                {% else %}
+                    Остаток: {{ element.debt }}<br>
+                {% endif %}
+                Контакты: {{ element.email }}, {{ element.street }} {{ element.house_number }}, {{ element.city }}, {{ element.country }}
             </div>
         </li>
         {% endfor %}
     </ul>
     <div>
-        <a href="{% url 'admin:index' %}" class="button">Admin Page</a>
-        <a href="/api/" class="button">API Page</a>
-        <a href="{% url 'add_element' %}" class="button">Add Network Element</a>
-        <a href="{% url 'all_elements' %}" class="button">View All Elements</a>
-        <a href="{% url 'add_product' %}" class="button">Add Product</a>
+        <a href="{% url 'admin:index' %}" class="button">Админка</a>
+        <a href="/api/" class="button">API страница</a>
+        <a href="{% url 'add_element' %}" class="button">Добавить элемент сети</a>
+        <a href="{% url 'all_elements' %}" class="button">Посмотреть все элементы</a>
     </div>
 </body>
 </html>

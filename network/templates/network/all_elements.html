@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Network Elements</title>
+    <title>Все элементы сети</title>
     <style>
         .button {
             display: inline-block;
@@ -31,13 +31,14 @@
     </style>
 </head>
 <body>
-    <a href="{% url 'home' %}" class="button">Home</a>
-    <h1>All Network Elements</h1>
+    <a href="{% url 'home' %}" class="button">Главная страница</a>
+    <a href="{% url 'add_product' %}" class="button">Добавить продукт</a>
+    <h1>Все элементы сети</h1>
 
     <form method="GET" action="">
-        <label for="city">Filter by city:</label>
+        <label for="city">Фильтр по городу:</label>
         <input type="text" id="city" name="city" value="{{ city_filter }}">
-        <button type="submit" class="button">Filter</button>
+        <button type="submit" class="button">Применить фильтр</button>
     </form>
 
     <ul>
@@ -46,11 +47,11 @@
                 <a href="{% url 'element_detail' element.pk %}">
                     <strong>{{ element.name }}</strong> ({{ element.get_level_display }})<br>
                 </a>
-                Supplier:
+                Поставщик:
                 {% if element.supplier %}
                     <a href="{% url 'element_detail' element.supplier.pk %}">{{ element.supplier.name }}</a>
                 {% else %}
-                    None
+                    Нет
                 {% endif %}
                 <br>
                 {% if element.supplier %}
@@ -61,13 +62,13 @@
                     {% endif %}
                 {% endif %}
                 <br>
-                Contacts: {{ element.email }}, {{ element.street }} {{ element.house_number }}, {{ element.city }}, {{ element.country }}
+                Контакты: {{ element.email }}, {{ element.street }} {{ element.house_number }}, {{ element.city }}, {{ element.country }}
             </li>
             <br>
         {% endfor %}
     </ul>
     <div>
-        <a href="{% url 'add_product' %}" class="button">Add Product</a>
+
     </div>
 </body>
 </html>

@@ -1,42 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Network Element</title>
+    <title>Добавить элемент сети</title>
     <style>
-        /* Стили для скрытия поля Debt по умолчанию */
+        /* Стили для скрытия поля Остаток по умолчанию */
         .hidden {
             display: none;
         }
     </style>
 </head>
 <body>
-    <h2>Add Network Element</h2>
+    <h2>Добавить элемент сети</h2>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <script>
-            // Динамическое отображение поля Debt при выборе поставщика
-            document.addEventListener('DOMContentLoaded', function() {
-                var supplierField = document.getElementById('id_supplier');
-                var debtField = document.getElementById('id_debt');
-
-                function toggleDebtField() {
-                    debtField.classList.toggle('hidden', !supplierField.value); // Скрываем поле Debt, если поставщик не выбран
-                }
-
-                // Инициализация при загрузке страницы
-                toggleDebtField();
-
-                // Обработка изменений в поле Supplier
-                supplierField.addEventListener('change', function() {
-                    toggleDebtField();
-                });
-            });
-        </script>
-        <button type="submit">Add</button>
-        <a href="{% url 'home' %}">Cancel</a>
+        {{ form.non_field_errors }}
+        <div>
+            <label for="{{ form.name.id_for_label }}">Название:</label>
+            {{ form.name }}
+            {{ form.name.errors }}
+        </div>
+        <div>
+            <label for="{{ form.email.id_for_label }}">Email:</label>
+            {{ form.email }}
+            {{ form.email.errors }}
+        </div>
+        <div>
+            <label for="{{ form.country.id_for_label }}">Страна:</label>
+            {{ form.country }}
+            {{ form.country.errors }}
+        </div>
+        <div>
+            <label for="{{ form.city.id_for_label }}">Город:</label>
+            {{ form.city }}
+            {{ form.city.errors }}
+        </div>
+        <div>
+            <label for="{{ form.street.id_for_label }}">Улица:</label>
+            {{ form.street }}
+            {{ form.street.errors }}
+        </div>
+        <div>
+            <label for="{{ form.house_number.id_for_label }}">Номер дома:</label>
+            {{ form.house_number }}
+            {{ form.house_number.errors }}
+        </div>
+        <div>
+            <label for="{{ form.supplier.id_for_label }}">Поставщик:</label>
+            {{ form.supplier }}
+            {{ form.supplier.errors }}
+        </div>
+        <div id="debt_field" class="{% if form.supplier.value %}hidden{% endif %}">
+            <label for="{{ form.debt.id_for_label }}">Остаток:</label>
+            {{ form.debt }}
+            {{ form.debt.errors }}
+        </div>
+        <button type="submit">Добавить</button>
+        <a href="{% url 'home' %}">Отмена</a>
     </form>
+
+    <script>
+        // Динамическое отображение поля Остаток при выборе поставщика
+        document.addEventListener('DOMContentLoaded', function() {
+            var supplierField = document.getElementById('id_supplier');
+            var debtField = document.getElementById('debt_field');
+
+            function toggleDebtField() {
+                debtField.classList.toggle('hidden', !supplierField.value); // Скрываем поле Остаток, если поставщик не выбран
+            }
+
+            // Инициализация при загрузке страницы
+            toggleDebtField();
+
+            // Обработка изменений в поле Supplier
+            supplierField.addEventListener('change', function() {
+                toggleDebtField();
+            });
+        });
+    </script>
 </body>
 </html>
