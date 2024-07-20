@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ element.name }}</title>
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            color: #fff;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 4px #999;
+        }
+
+        .button:hover {background-color: #45a049}
+
+        .button:active {
+            background-color: #45a049;
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'home' %}" class="button">Home</a>
+    <a href="{% url 'all_elements' %}" class="button">All Elements</a>
+    <h1>{{ element.name }}</h1>
+    <p>Email: {{ element.email }}</p>
+    <p>Country: {{ element.country }}</p>
+    <p>City: {{ element.city }}</p>
+    <p>Street: {{ element.street }}</p>
+    <p>House number: {{ element.house_number }}</p>
+    <p>Supplier:
+        {% if element.supplier %}
+            <a href="{% url 'element_detail' element.supplier.pk %}">{{ element.supplier.name }}</a>
+        {% else %}
+            None
+        {% endif %}
+    </p>
+    {% if element.supplier %}
+        {% if element.debt < 0 %}
+            <p>Задолженность: {{ element.debt|floatformat:2|slice:"1:" }}</p>
+        {% else %}
+            <p>Остаток: {{ element.debt }}</p>
+        {% endif %}
+    {% endif %}
+    <p>Created at: {{ element.created_at }}</p>
+    <h2>Products</h2>
+    <ul>
+        {% for product in element.products.all %}
+            <li>{{ product.name }} - {{ product.model }} ({{ product.release_date }})</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

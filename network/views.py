@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework import viewsets, permissions, filters
 from rest_framework.permissions import BasePermission
 
 from .models import NetworkElement, Product
 from .serializers import NetworkElementSerializer, ProductSerializer
-from .forms import NetworkElementForm
+from .forms import NetworkElementForm, ProductForm
+
 
 def home(request):
     elements = NetworkElement.objects.all()
@@ -14,8 +15,12 @@ def home(request):
     return render(request, 'network/home.html', context)
 
 def all_elements(request):
-    elements = NetworkElement.objects.all()
-    return render(request, 'network/all_elements.html', {'elements': elements})
+    city_filter = request.GET.get('city', '')
+    if city_filter:
+        elements = NetworkElement.objects.filter(city__icontains=city_filter)
+    else:
+        elements = NetworkElement.objects.all()
+    return render(request, 'network/all_elements.html', {'elements': elements, 'city_filter': city_filter})
 
 
 def add_element(request):
@@ -40,6 +45,16 @@ def add_element(request):
 
     return render(request, 'network/add_element.html', {'form': form})
 
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')  # Перенаправление на главную страницу после успешного добавления
+    else:
+        form = ProductForm()
+    return render(request, 'network/add_product.html', {'form': form})
+
 class IsActiveUser(BasePermission):
     def has_permission(self, request, view):
         return bool(request.user and request.user.is_active)
@@ -55,3 +70,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [IsActiveUser]
+
+def element_detail(request, pk):
+    element = get_object_or_404(NetworkElement, pk=pk)
+    return render(request, 'network/element_detail.html', {'element': element})

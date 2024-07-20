@@ -2,38 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>All Elements</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Network Elements</title>
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            color: #fff;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 4px #999;
+        }
+
+        .button:hover {background-color: #45a049}
+
+        .button:active {
+            background-color: #45a049;
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+        }
+    </style>
 </head>
 <body>
-    <h1>All Elements</h1>
+    <a href="{% url 'home' %}" class="button">Home</a>
+    <h1>All Network Elements</h1>
 
-    {% for element in elements %}
-    <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
-        <h2>{{ element.name }}</h2>
-        <p><strong>Contacts:</strong></p>
-        <ul>
-            <li>Email: {{ element.email }}</li>
-            <li>Country: {{ element.country }}</li>
-            <li>City: {{ element.city }}</li>
-            <li>Street: {{ element.street }}, {{ element.house_number }}</li>
-        </ul>
-        <p><strong>Products:</strong></p>
-        <ul>
-            {% for product in element.products.all %}
-            <li>{{ product.name }} - {{ product.model }} (Released: {{ product.release_date|date:"Y-m-d" }})</li>
-            {% endfor %}
-        </ul>
-        <p><strong>Supplier:</strong>
-            {% if element.supplier %}
-                <a href="{% url 'admin:network_networkelement_change' element.supplier.id %}">{{ element.supplier.name }}</a>
-            {% else %}
-                No supplier
-            {% endif %}
-        </p>
-        <p><strong>Debt:</strong> {{ element.debt }}</p>
-        <p><strong>Created At:</strong> {{ element.created_at }}</p>
+    <form method="GET" action="">
+        <label for="city">Filter by city:</label>
+        <input type="text" id="city" name="city" value="{{ city_filter }}">
+        <button type="submit" class="button">Filter</button>
+    </form>
+
+    <ul>
+        {% for element in elements %}
+            <li>
+                <a href="{% url 'element_detail' element.pk %}">
+                    <strong>{{ element.name }}</strong> ({{ element.get_level_display }})<br>
+                </a>
+                Supplier:
+                {% if element.supplier %}
+                    <a href="{% url 'element_detail' element.supplier.pk %}">{{ element.supplier.name }}</a>
+                {% else %}
+                    None
+                {% endif %}
+                <br>
+                {% if element.supplier %}
+                    {% if element.debt < 0 %}
+                        <p>Задолженность: {{ element.debt|floatformat:2|slice:"1:" }}</p>
+                    {% else %}
+                        <p>Остаток: {{ element.debt }}</p>
+                    {% endif %}
+                {% endif %}
+                <br>
+                Contacts: {{ element.email }}, {{ element.street }} {{ element.house_number }}, {{ element.city }}, {{ element.country }}
+            </li>
+            <br>
+        {% endfor %}
+    </ul>
+    <div>
+        <a href="{% url 'add_product' %}" class="button">Add Product</a>
     </div>
-    {% endfor %}
-
 </body>
 </html>
