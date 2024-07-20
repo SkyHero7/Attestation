@@ -74,3 +74,11 @@ class ProductViewSet(viewsets.ModelViewSet):
 def element_detail(request, pk):
     element = get_object_or_404(NetworkElement, pk=pk)
     return render(request, 'network/element_detail.html', {'element': element})
+
+def clear_debt(request, pk):
+    element = get_object_or_404(NetworkElement, pk=pk)
+    if request.method == 'POST':
+        if element.debt != 0:
+            element.debt = 0
+            element.save()
+        return redirect('element_detail', pk=pk)

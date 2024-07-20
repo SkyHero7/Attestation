@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,18 +28,30 @@
             box-shadow: 0 5px #666;
             transform: translateY(4px);
         }
+
+        .button-danger {
+            background-color: #f44336;
+        }
+
+        .button-danger:hover {background-color: #d32f2f}
+
+        .button-danger:active {
+            background-color: #d32f2f;
+            box-shadow: 0 5px #999;
+            transform: translateY(4px);
+        }
     </style>
 </head>
 <body>
-    <a href="{% url 'home' %}" class="button">Home</a>
-    <a href="{% url 'all_elements' %}" class="button">All Elements</a>
+    <a href="{% url 'home' %}" class="button">Главная</a>
+    <a href="{% url 'all_elements' %}" class="button">Все элементы</a>
     <h1>{{ element.name }}</h1>
     <p>Email: {{ element.email }}</p>
-    <p>Country: {{ element.country }}</p>
-    <p>City: {{ element.city }}</p>
-    <p>Street: {{ element.street }}</p>
-    <p>House number: {{ element.house_number }}</p>
-    <p>Supplier:
+    <p>Страна: {{ element.country }}</p>
+    <p>Город: {{ element.city }}</p>
+    <p>Улица: {{ element.street }}</p>
+    <p>Номер дома: {{ element.house_number }}</p>
+    <p>Поставщик:
         {% if element.supplier %}
             <a href="{% url 'element_detail' element.supplier.pk %}">{{ element.supplier.name }}</a>
         {% else %}
@@ -52,9 +64,19 @@
         {% else %}
             <p>Остаток: {{ element.debt }}</p>
         {% endif %}
+        <form method="post" action="{% url 'clear_debt' element.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="button button-danger">
+                {% if element.debt < 0 %}
+                    Погасить задолженность
+                {% else %}
+                    Обнулить остаток
+                {% endif %}
+            </button>
+        </form>
     {% endif %}
-    <p>Created at: {{ element.created_at }}</p>
-    <h2>Products</h2>
+    <p>Создан: {{ element.created_at }}</p>
+    <h2>Продукты</h2>
     <ul>
         {% for product in element.products.all %}
             <li>{{ product.name }} - {{ product.model }} ({{ product.release_date }})</li>
