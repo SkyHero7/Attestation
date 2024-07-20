@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework import viewsets, permissions, filters
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, IsAuthenticated
 
-from .models import NetworkElement, Product
-from .serializers import NetworkElementSerializer, ProductSerializer
+from .models import NetworkElement, Product, Supplier
+from .serializers import NetworkElementSerializer, ProductSerializer, SupplierSerializer
 from .forms import NetworkElementForm, ProductForm
 
 
@@ -71,9 +71,23 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     permission_classes = [IsActiveUser]
 
+
 def element_detail(request, pk):
     element = get_object_or_404(NetworkElement, pk=pk)
-    return render(request, 'network/element_detail.html', {'element': element})
+    # Получаем все объекты, у которых текущий элемент является поставщиком
+    supplied_elements = NetworkElement.objects.filter(supplier=element)
+
+    # Рассчитываем суммы задолженностей и остатков
+    total_debt = sum(e.debt for e in supplied_elements if e.debt < 0)
+    total_balance = sum(e.debt for e in supplied_elements if e.debt >= 0)
+
+    context = {
+        'element': element,
+        'supplied_elements': supplied_elements,
+        'total_debt': abs(total_debt),  # Убираем знак минуса для общего долга
+        'total_balance': total_balance,
+    }
+    return render(request, 'network/element_detail.html', context)
 
 def clear_debt(request, pk):
     element = get_object_or_404(NetworkElement, pk=pk)
@@ -82,3 +96,10 @@ def clear_debt(request, pk):
             element.debt = 0
             element.save()
         return redirect('element_detail', pk=pk)
+
+class SupplierViewSet(viewsets.ModelViewSet):
+    queryset = Supplier.objects.all()
+    serializer_class = SupplierSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['country']

@@ -21,9 +21,7 @@
             box-shadow: 0 4px #999;
         }
 
-        .button:hover {
-            background-color: #45a049;
-        }
+        .button:hover {background-color: #45a049}
 
         .button:active {
             background-color: #45a049;
@@ -35,9 +33,7 @@
             background-color: #f44336;
         }
 
-        .button-danger:hover {
-            background-color: #d32f2f;
-        }
+        .button-danger:hover {background-color: #d32f2f}
 
         .button-danger:active {
             background-color: #d32f2f;
@@ -59,7 +55,7 @@
         {% if element.supplier %}
             <a href="{% url 'element_detail' element.supplier.pk %}">{{ element.supplier.name }}</a>
         {% else %}
-            Нет
+            None
         {% endif %}
     </p>
     {% if element.supplier %}
@@ -80,11 +76,28 @@
         </form>
     {% endif %}
     <p>Создан: {{ element.created_at }}</p>
+
     <h2>Продукты</h2>
     <ul>
         {% for product in element.products.all %}
             <li>{{ product.name }} - {{ product.model }} ({{ product.release_date }})</li>
         {% endfor %}
     </ul>
+
+    <h2>Задолженности и остатки</h2>
+    <ul>
+        {% for supplied_element in supplied_elements %}
+            <li>
+                <a href="{% url 'element_detail' supplied_element.pk %}">{{ supplied_element.name }}</a>
+                {% if supplied_element.debt < 0 %}
+                    - Задолженность: {{ supplied_element.debt|floatformat:2|slice:"1:" }}
+                {% else %}
+                    - Остаток: {{ supplied_element.debt }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    <p>Общая задолженность перед {{ element.name }}: {% if total_debt > 0 %}{{ total_debt|floatformat:2|slice:"1:" }}{% else %}0{% endif %}</p>
+    <p>Общий остаток у {{ element.name }}: {% if total_balance > 0 %}{{ total_balance|floatformat:2 }}{% else %}0{% endif %}</p>
 </body>
 </html>
