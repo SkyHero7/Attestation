@@ -8,6 +8,11 @@ from .forms import NetworkElementForm, ProductForm
 
 
 def home(request):
+    """
+    Представление домашней страницы.
+
+    Запрашивает все элементы сети и передает их в контексте шаблона.
+    """
     elements = NetworkElement.objects.all()
     context = {
         'elements': elements,
@@ -16,6 +21,11 @@ def home(request):
 
 
 def all_elements(request):
+    """
+    Представление для отображения всех элементов сети с фильтрацией по городу.
+
+    Фильтрует элементы по полю 'city', если задан параметр 'city' в запросе.
+    """
     city_filter = request.GET.get('city', '')
     if city_filter:
         elements = NetworkElement.objects.filter(city__icontains=city_filter)
@@ -25,6 +35,11 @@ def all_elements(request):
 
 
 def add_element(request):
+    """
+    Представление для добавления нового элемента сети.
+
+    Обрабатывает форму добавления элемента и сохраняет новый элемент в базе данных.
+    """
     if request.method == 'POST':
         form = NetworkElementForm(request.POST)
         if form.is_valid():
@@ -44,6 +59,11 @@ def add_element(request):
 
 
 def add_product(request):
+    """
+    Представление для добавления нового продукта.
+
+    Обрабатывает форму добавления продукта и сохраняет новый продукт в базе данных.
+    """
     if request.method == 'POST':
         form = ProductForm(request.POST)
         if form.is_valid():
@@ -55,6 +75,11 @@ def add_product(request):
 
 
 def element_detail(request, pk):
+    """
+    Представление для отображения деталей конкретного элемента сети.
+
+    Запрашивает элемент по его идентификатору, а также связанные с ним элементы и их задолженность.
+    """
     element = get_object_or_404(NetworkElement, pk=pk)
     supplied_elements = NetworkElement.objects.filter(supplier=element)
     total_debt = sum(e.debt for e in supplied_elements if e.debt < 0)
@@ -69,6 +94,11 @@ def element_detail(request, pk):
 
 
 def clear_debt(request, pk):
+    """
+    Представление для очистки задолженности у конкретного элемента.
+
+    Устанавливает задолженность элемента в 0 при POST-запросе и перенаправляет на страницу деталей элемента.
+    """
     element = get_object_or_404(NetworkElement, pk=pk)
     if request.method == 'POST':
         if element.debt != 0:
@@ -78,6 +108,11 @@ def clear_debt(request, pk):
 
 
 class SupplierViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet для управления поставщиками.
+
+    Предоставляет стандартные операции CRUD для модели Supplier.
+    """
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
     permission_classes = [IsAuthenticated]
@@ -86,6 +121,11 @@ class SupplierViewSet(viewsets.ModelViewSet):
 
 
 class NetworkElementViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet для управления элементами сети.
+
+    Предоставляет стандартные операции CRUD для модели NetworkElement.
+    """
     queryset = NetworkElement.objects.all()
     serializer_class = NetworkElementSerializer
     permission_classes = [IsAuthenticated]
@@ -94,6 +134,11 @@ class NetworkElementViewSet(viewsets.ModelViewSet):
 
 
 class ProductViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet для управления продуктами.
+
+    Предоставляет стандартные операции CRUD для модели Product.
+    """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated]
