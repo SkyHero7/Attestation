@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import NetworkElement, Product
 
+
 @admin.register(NetworkElement)
 class NetworkElementAdmin(admin.ModelAdmin):
     list_display = ('name', 'city', 'supplier', 'debt', 'created_at')
@@ -12,6 +13,7 @@ class NetworkElementAdmin(admin.ModelAdmin):
     def clear_debt(self, request, queryset):
         queryset.update(debt=0)
     clear_debt.short_description = 'Clear debt for selected elements'
+
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):

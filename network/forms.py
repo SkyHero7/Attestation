@@ -1,6 +1,7 @@
 from django import forms
 from .models import NetworkElement, Product
 
+
 class NetworkElementForm(forms.ModelForm):
     class Meta:
         model = NetworkElement

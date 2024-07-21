@@ -14,6 +14,7 @@ def home(request):
     }
     return render(request, 'network/home.html', context)
 
+
 def all_elements(request):
     city_filter = request.GET.get('city', '')
     if city_filter:
@@ -21,6 +22,7 @@ def all_elements(request):
     else:
         elements = NetworkElement.objects.all()
     return render(request, 'network/all_elements.html', {'elements': elements, 'city_filter': city_filter})
+
 
 def add_element(request):
     if request.method == 'POST':
@@ -40,6 +42,7 @@ def add_element(request):
         form = NetworkElementForm()
     return render(request, 'network/add_element.html', {'form': form})
 
+
 def add_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
@@ -49,6 +52,7 @@ def add_product(request):
     else:
         form = ProductForm()
     return render(request, 'network/add_product.html', {'form': form})
+
 
 def element_detail(request, pk):
     element = get_object_or_404(NetworkElement, pk=pk)
@@ -63,6 +67,7 @@ def element_detail(request, pk):
     }
     return render(request, 'network/element_detail.html', context)
 
+
 def clear_debt(request, pk):
     element = get_object_or_404(NetworkElement, pk=pk)
     if request.method == 'POST':
@@ -71,6 +76,7 @@ def clear_debt(request, pk):
             element.save()
         return redirect('element_detail', pk=pk)
 
+
 class SupplierViewSet(viewsets.ModelViewSet):
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
@@ -78,12 +84,14 @@ class SupplierViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['country']
 
+
 class NetworkElementViewSet(viewsets.ModelViewSet):
     queryset = NetworkElement.objects.all()
     serializer_class = NetworkElementSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter]
     search_fields = ['country']
+
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()

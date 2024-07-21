@@ -25,4 +25,3 @@ urlpatterns = [
     path('api/', include('network.api_urls')),  # Маршруты для API
     path('', include('network.urls')),  # Маршруты для веб-приложения
 ]
-

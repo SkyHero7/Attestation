@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class NetworkElement(models.Model):
     LEVEL_CHOICES = [
         (0, 'Завод'),
@@ -34,6 +35,8 @@ class NetworkElement(models.Model):
 
     def __str__(self):
         return self.name
+
+
 class Product(models.Model):
     name = models.CharField(max_length=255)
     model = models.CharField(max_length=255)
@@ -42,6 +45,7 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Supplier(models.Model):
     name = models.CharField(max_length=255)
