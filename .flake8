@@ -1,0 +1,4 @@
+[flake8]
+exclude = .venv,.env,env,venv,.venv,ENV,env.bak,venv.bak
+ignore = E501
+max-line-length = 79
